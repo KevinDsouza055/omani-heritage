@@ -6,14 +6,15 @@ export function HomeFeatured({ products }: { products: Product[] }) {
   if (!products.length) return null
 
   return (
-    <section className="bg-stone-50 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-end justify-between mb-8">
+    <section className="py-20 bg-[#F7F4EF]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-xs text-[#8B6914] font-medium uppercase tracking-widest mb-1">Handpicked</p>
-            <h2 className="text-2xl font-bold text-stone-900">Latest Products</h2>
+            <p className="text-[11px] text-[#8B6914] font-semibold uppercase tracking-widest mb-2">Handpicked</p>
+            <h2 className="text-3xl font-bold text-[#1C1917]">Latest Products</h2>
           </div>
-          <Link href="/shop" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">
+          <Link href="/shop"
+            className="text-sm text-[#78716C] hover:text-[#1C1917] transition-colors font-medium">
             View all →
           </Link>
         </div>
