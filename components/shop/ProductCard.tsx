@@ -26,8 +26,8 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/shop/${product.slug}`} className="group flex flex-col gap-3">
-      {/* Image container */}
-      <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-stone-100">
+      {/* Image */}
+      <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#EFEBE3] border border-[#E7E0D5]">
         {product.images?.[0] ? (
           <Image
             src={product.images[0]}
@@ -37,22 +37,22 @@ export function ProductCard({ product }: { product: Product }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ShoppingBag size={28} className="text-stone-300" />
+            <ShoppingBag size={28} className="text-[#C9A84C]/40" />
           </div>
         )}
 
         {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {outOfStock && <Badge variant="out" />}
           {!outOfStock && lowStock && <Badge variant="low" />}
           {hasDiscount && !outOfStock && <Badge variant="sale" />}
         </div>
 
-        {/* Quick add button */}
+        {/* Quick add */}
         <button
           onClick={handleAddToCart}
           disabled={outOfStock}
-          className="absolute bottom-2.5 right-2.5 w-8 h-8 rounded-xl bg-white shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[#8B6914] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+          className="absolute bottom-3 right-3 w-9 h-9 rounded-xl bg-[#1C1917] text-white flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 hover:bg-[#8B6914] disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
           aria-label="Add to cart"
         >
           <ShoppingBag size={14} />
@@ -61,23 +61,23 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="flex flex-col gap-1 px-0.5">
-        <p className="text-xs text-stone-400 uppercase tracking-wide">
+        <p className="text-[10px] font-semibold text-[#8B6914] uppercase tracking-widest">
           {product.category?.name ?? 'Uncategorised'}
         </p>
-        <p className="text-sm font-medium text-stone-900 leading-snug line-clamp-2 group-hover:text-[#8B6914] transition-colors">
+        <p className="text-sm font-semibold text-[#1C1917] leading-snug line-clamp-2 group-hover:text-[#8B6914] transition-colors duration-200">
           {product.name}
         </p>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-sm font-bold text-stone-900">{formatPrice(product.price)}</span>
+          <span className="text-sm font-bold text-[#1C1917]">{formatPrice(product.price)}</span>
           {hasDiscount && (
-            <span className="text-xs text-stone-400 line-through">
-              {formatPrice(product.compare_at_price!)}
-            </span>
-          )}
-          {hasDiscount && (
-            <span className="text-xs text-red-600 font-medium">
-              -{getDiscountPercentage(product.price, product.compare_at_price!)}%
-            </span>
+            <>
+              <span className="text-xs text-[#78716C] line-through">
+                {formatPrice(product.compare_at_price!)}
+              </span>
+              <span className="text-[10px] font-bold text-red-500">
+                -{getDiscountPercentage(product.price, product.compare_at_price!)}%
+              </span>
+            </>
           )}
         </div>
       </div>
