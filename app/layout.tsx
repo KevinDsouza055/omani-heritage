@@ -6,6 +6,7 @@ import { SnackbarProvider } from '@/components/ui/Snackbar'
 import { Navbar } from '@/components/ui/Navbar'
 import { Footer } from '@/components/ui/Footer'
 import { CartDrawer } from '@/components/cart/CartDrawer'
+import { CookieBanner } from '@/components/ui/CookieBanner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
             <Footer />
+            <CookieBanner />
           </SnackbarProvider>
         </CartProvider>
       </body>
