@@ -25,26 +25,67 @@ const features = [
 
 export function HomeTrust() {
   return (
-    <section className="py-20 bg-[#1C1917]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <p className="text-[11px] text-[#C9A84C] font-semibold uppercase tracking-widest mb-2">Why choose us</p>
-          <h2 className="text-3xl font-bold text-white">Shop with Confidence</h2>
+    <section style={{ backgroundColor: '#1C1917', padding: '5rem 0' }}>
+      <div className="page-container">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: '#C9A84C', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Why choose us
+          </p>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.02em', margin: 0 }}>
+            Shop with Confidence
+          </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+
+        <div className="trust-grid">
           {features.map(({ icon, title, desc }) => (
-            <div key={title} className="flex flex-col gap-4 p-6 rounded-2xl bg-[#292524] border border-stone-800">
-              <div className="w-10 h-10 rounded-xl bg-[#8B6914]/20 flex items-center justify-center text-[#C9A84C]">
-                {icon}
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <p className="font-semibold text-white text-sm">{title}</p>
-                <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
+            <div key={title} className="trust-card">
+              <div className="trust-icon">{icon}</div>
+              <div>
+                <p style={{ fontWeight: 600, color: 'white', fontSize: 14, marginBottom: 6 }}>{title}</p>
+                <p style={{ fontSize: 13, color: '#78716C', lineHeight: 1.6, margin: 0 }}>{desc}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      <style>{`
+        .trust-grid {
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+          gap: 16px;
+        }
+        @media (min-width: 640px) {
+          .trust-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1024px) {
+          .trust-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .trust-card {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          padding: 24px;
+          border-radius: 16px;
+          background-color: #292524;
+          border: 1px solid rgba(255,255,255,0.06);
+          transition: all 0.2s;
+        }
+        .trust-card:hover {
+          border-color: rgba(201,168,76,0.3);
+          transform: translateY(-2px);
+        }
+        .trust-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          background-color: rgba(139,105,20,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #C9A84C;
+        }
+      `}</style>
     </section>
   )
 }

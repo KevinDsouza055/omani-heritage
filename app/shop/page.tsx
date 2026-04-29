@@ -45,17 +45,16 @@ export default function ShopPage() {
     })
 
   return (
-    <div className="min-h-screen bg-[#F7F4EF]">
-      {/* Page header */}
-      <div className="bg-[#EFEBE3] border-b border-[#E7E0D5]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
+    <div style={{ minHeight: '100vh', backgroundColor: '#F7F4EF' }}>
+  <div style={{ backgroundColor: '#EFEBE3', borderBottom: '1px solid #E7E0D5' }}>
+    <div className="page-container" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
           <p className="text-[11px] text-[#8B6914] font-semibold uppercase tracking-widest mb-2">Our Collection</p>
           <h1 className="text-3xl font-bold text-[#1C1917]">Shop</h1>
           <p className="text-sm text-[#78716C] mt-1">Authentic handcrafted products from Oman</p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
+      <div className="page-container" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
         {/* Search + sort row */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1 max-w-sm">

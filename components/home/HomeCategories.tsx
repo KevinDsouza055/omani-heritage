@@ -16,33 +16,107 @@ export function HomeCategories({ categories }: { categories: Category[] }) {
   if (!categories.length) return null
 
   return (
-    <section className="py-20 bg-[#EFEBE3]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-10">
+    <section style={{ backgroundColor: '#EFEBE3', padding: '5rem 0' }}>
+      <div className="page-container">
+        <div className="section-header">
           <div>
-            <p className="text-[11px] text-[#8B6914] font-semibold uppercase tracking-widest mb-2">Browse</p>
-            <h2 className="text-3xl font-bold text-[#1C1917]">Shop by Category</h2>
+            <p className="section-eyebrow">Browse</p>
+            <h2 className="section-title">Shop by Category</h2>
           </div>
-          <Link href="/shop"
-            className="text-sm text-[#78716C] hover:text-[#1C1917] transition-colors font-medium">
-            View all →
-          </Link>
+          <Link href="/shop" className="view-all-link">View all →</Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <div className="category-grid">
           {categories.map(cat => (
-            <Link key={cat.id} href={`/shop?category=${cat.slug}`}
-              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-[#F7F4EF] border border-[#E7E0D5] hover:border-[#C9A84C]/50 hover:shadow-md transition-all duration-200">
-              <div className="w-12 h-12 rounded-xl bg-[#EFEBE3] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-200">
+            <Link key={cat.id} href={`/shop?category=${cat.slug}`} className="category-card">
+              <div className="category-icon">
                 {categoryEmojis[cat.slug] ?? '🛍'}
               </div>
-              <span className="text-sm font-semibold text-[#1C1917] group-hover:text-[#8B6914] transition-colors text-center">
-                {cat.name}
-              </span>
+              <span className="category-name">{cat.name}</span>
             </Link>
           ))}
         </div>
       </div>
+
+      <style>{`
+        .section-header {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 2.5rem;
+        }
+        .section-eyebrow {
+          font-size: 11px;
+          font-weight: 600;
+          color: #8B6914;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+        .section-title {
+          font-size: clamp(1.5rem, 3vw, 2rem);
+          font-weight: 700;
+          color: #1C1917;
+          letter-spacing: -0.02em;
+          margin: 0;
+        }
+        .view-all-link {
+          font-size: 13px;
+          font-weight: 500;
+          color: #78716C;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .view-all-link:hover { color: #1C1917; }
+        .category-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+        }
+        @media (min-width: 480px) {
+          .category-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 768px) {
+          .category-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .category-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          padding: 24px 16px;
+          border-radius: 16px;
+          background-color: #F7F4EF;
+          border: 1px solid #E7E0D5;
+          text-decoration: none;
+          transition: all 0.2s;
+        }
+        .category-card:hover {
+          border-color: rgba(201,168,76,0.5);
+          box-shadow: 0 4px 16px rgba(139,105,20,0.1);
+          transform: translateY(-2px);
+        }
+        .category-card:hover .category-name { color: #8B6914; }
+        .category-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          background-color: #EFEBE3;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          transition: transform 0.2s;
+        }
+        .category-card:hover .category-icon { transform: scale(1.1); }
+        .category-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: #1C1917;
+          text-align: center;
+          transition: color 0.2s;
+        }
+      `}</style>
     </section>
   )
 }

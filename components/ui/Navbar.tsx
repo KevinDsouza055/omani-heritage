@@ -28,48 +28,77 @@ export function Navbar() {
   ]
 
   return (
-    <header className={cn(
-      'sticky top-0 z-50 transition-all duration-300',
-      scrolled
-        ? 'bg-[#F7F4EF]/95 backdrop-blur-md shadow-sm border-b border-[#E7E0D5]'
-        : 'bg-[#F7F4EF] border-b border-[#E7E0D5]'
-    )}>
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      backgroundColor: scrolled ? 'rgba(247,244,239,0.95)' : '#F7F4EF',
+      backdropFilter: scrolled ? 'blur(12px)' : 'none',
+      borderBottom: '1px solid #E7E0D5',
+      boxShadow: scrolled ? '0 1px 12px rgba(0,0,0,0.06)' : 'none',
+      transition: 'all 0.3s ease',
+    }}>
+      <div className="page-container" style={{ height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem' }}>
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 shrink-0 group">
-          <div className="w-8 h-8 rounded-lg bg-[#8B6914] flex items-center justify-center shadow-sm">
-            <span className="text-white text-[11px] font-bold tracking-wide">OHG</span>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 8,
+            backgroundColor: '#8B6914',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 1px 4px rgba(139,105,20,0.3)'
+          }}>
+            <span style={{ color: 'white', fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>OHG</span>
           </div>
-          <div className="hidden sm:block">
-            <span className="font-semibold text-[#1C1917] text-sm tracking-tight">Omani Heritage</span>
-            <span className="text-[#8B6914] text-sm font-semibold"> Gallery</span>
+          <div style={{ display: 'none' }} className="sm-logo">
+            <span style={{ fontWeight: 600, color: '#1C1917', fontSize: 14, letterSpacing: '-0.02em' }}>Omani Heritage</span>
+            <span style={{ fontWeight: 600, color: '#8B6914', fontSize: 14 }}> Gallery</span>
           </div>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-0.5">
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="desktop-nav">
           {links.map(l => (
-            <Link key={l.href} href={l.href}
-              className="px-4 py-2 text-sm text-[#78716C] hover:text-[#1C1917] hover:bg-[#EFEBE3] rounded-lg transition-all duration-150 font-medium">
+            <Link key={l.href} href={l.href} style={{
+              padding: '8px 14px',
+              fontSize: 14,
+              fontWeight: 500,
+              color: '#78716C',
+              borderRadius: 8,
+              transition: 'all 0.15s',
+            }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.backgroundColor = '#EFEBE3'; (e.target as HTMLElement).style.color = '#1C1917' }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.backgroundColor = 'transparent'; (e.target as HTMLElement).style.color = '#78716C' }}
+            >
               {l.label}
             </Link>
           ))}
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-1">
-          <Link href="/search"
-            className="p-2.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#EFEBE3] transition-all">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Link href="/search" style={{
+            padding: 8, borderRadius: 8, color: '#78716C', display: 'flex',
+            transition: 'all 0.15s',
+          }}>
             <Search size={17} />
           </Link>
 
-          <button onClick={toggleCart}
-            className="relative p-2.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#EFEBE3] transition-all"
-            aria-label="Open cart">
+          <button onClick={toggleCart} aria-label="Open cart" style={{
+            position: 'relative', padding: 8, borderRadius: 8,
+            color: '#78716C', background: 'none', border: 'none',
+            cursor: 'pointer', display: 'flex', transition: 'all 0.15s',
+          }}>
             <ShoppingBag size={17} />
             {mounted && totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-[#8B6914] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-sm">
+              <span style={{
+                position: 'absolute', top: -2, right: -2,
+                minWidth: 18, height: 18,
+                backgroundColor: '#8B6914', color: 'white',
+                fontSize: 10, fontWeight: 700, borderRadius: 99,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '0 4px',
+              }}>
                 {totalItems > 99 ? '99+' : totalItems}
               </span>
             )}
@@ -77,8 +106,14 @@ export function Navbar() {
 
           <AuthButton />
 
-          <button onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2.5 rounded-lg text-[#78716C] hover:bg-[#EFEBE3] transition-all ml-1">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              padding: 8, borderRadius: 8, background: 'none', border: 'none',
+              cursor: 'pointer', color: '#78716C', display: 'none',
+            }}
+            className="mobile-menu-btn"
+          >
             {menuOpen ? <X size={17} /> : <Menu size={17} />}
           </button>
         </div>
@@ -86,21 +121,41 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-[#E7E0D5] bg-[#F7F4EF] px-4 py-3 flex flex-col gap-1 shadow-lg">
+        <div style={{
+          borderTop: '1px solid #E7E0D5',
+          backgroundColor: '#F7F4EF',
+          padding: '12px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+        }}>
           {links.map(l => (
-            <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
-              className="px-4 py-3 text-sm text-[#1C1917] hover:bg-[#EFEBE3] rounded-xl transition-all font-medium">
+            <Link key={l.href} href={l.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                padding: '12px 16px', fontSize: 14, fontWeight: 500,
+                color: '#1C1917', borderRadius: 12, transition: 'all 0.15s',
+              }}>
               {l.label}
             </Link>
           ))}
-          <div className="pt-2 mt-1 border-t border-[#E7E0D5]">
-            <Link href="/auth/login" onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 text-sm font-semibold text-center rounded-xl bg-[#1C1917] text-white">
-              Sign in
-            </Link>
-          </div>
+          <Link href="/auth/login"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              marginTop: 8, padding: '12px 16px', fontSize: 14, fontWeight: 600,
+              textAlign: 'center', borderRadius: 12,
+              backgroundColor: '#1C1917', color: 'white',
+            }}>
+            Sign in
+          </Link>
         </div>
       )}
+
+      <style>{`
+        @media (min-width: 640px) { .sm-logo { display: block !important; } }
+        @media (min-width: 768px) { .desktop-nav { display: flex !important; } .mobile-menu-btn { display: none !important; } }
+        @media (max-width: 767px) { .desktop-nav { display: none !important; } .mobile-menu-btn { display: flex !important; } }
+      `}</style>
     </header>
   )
 }
@@ -125,16 +180,26 @@ function AuthButton() {
 
   if (user) {
     return (
-      <Link href="/account"
-        className="hidden sm:flex items-center text-xs font-semibold px-4 py-2 rounded-lg bg-[#EFEBE3] text-[#1C1917] hover:bg-[#E7E0D5] transition-all ml-1">
+      <Link href="/account" style={{
+        display: 'none',
+        fontSize: 12, fontWeight: 600,
+        padding: '7px 14px', borderRadius: 8,
+        backgroundColor: '#EFEBE3', color: '#1C1917',
+        marginLeft: 4, transition: 'all 0.15s',
+      }} className="auth-btn">
         Account
       </Link>
     )
   }
 
   return (
-    <Link href="/auth/login"
-      className="hidden sm:flex items-center text-xs font-semibold px-4 py-2 rounded-lg bg-[#1C1917] text-white hover:bg-[#292524] transition-all ml-1">
+    <Link href="/auth/login" style={{
+      display: 'none',
+      fontSize: 12, fontWeight: 600,
+      padding: '7px 14px', borderRadius: 8,
+      backgroundColor: '#1C1917', color: 'white',
+      marginLeft: 4, transition: 'all 0.15s',
+    }} className="auth-btn">
       Sign in
     </Link>
   )

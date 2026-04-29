@@ -1,70 +1,183 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 export function HomeHero() {
   return (
-    <section className="relative overflow-hidden bg-[#F7F4EF]">
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0"
-        style={{
-          backgroundImage: `radial-gradient(circle, #C9A84C18 1px, transparent 1px)`,
-          backgroundSize: '32px 32px',
-        }}
-      />
+    <section style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#F7F4EF' }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        backgroundImage: 'radial-gradient(circle, rgba(201,168,76,0.12) 1px, transparent 1px)',
+        backgroundSize: '32px 32px',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to bottom, transparent 60%, #F7F4EF 100%)',
+      }} />
 
-      {/* Warm gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F7F4EF]" />
-
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-28 md:py-36 flex flex-col items-center text-center gap-7">
-
-        {/* Pill badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C9A84C]/40 bg-[#C9A84C]/8">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#8B6914] animate-pulse" />
-          <span className="text-xs font-semibold text-[#8B6914] tracking-widest uppercase">Handcrafted in Oman</span>
+      <div className="page-container hero-content">
+        <div className="hero-badge">
+          <span className="hero-pulse" />
+          <span>Handcrafted in Oman</span>
         </div>
 
-        {/* Headline */}
-        <div className="flex flex-col gap-1">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#1C1917] leading-[1.05] tracking-tight">
-            Authentic Omani
-          </h1>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight"
-            style={{ color: '#8B6914' }}>
-            Heritage Crafts
-          </h1>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <h1 className="hero-h1 color-dark">Authentic Omani</h1>
+          <h1 className="hero-h1 color-brand">Heritage Crafts</h1>
         </div>
 
-        {/* Sub */}
-        <p className="text-base sm:text-lg text-[#78716C] max-w-lg leading-relaxed">
+        <p className="hero-sub">
           Discover centuries-old traditions through basketry, aromatics, silverware, and more — shipped worldwide from Muscat.
         </p>
 
-        {/* CTAs */}
-        <div className="flex items-center gap-3 flex-wrap justify-center">
-          <Link href="/shop"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[#1C1917] text-white text-sm font-semibold hover:bg-[#292524] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 duration-200">
+        <div className="hero-ctas">
+          <Link href="/shop" className="btn-primary">
             Shop Now <ArrowRight size={15} />
           </Link>
-          <Link href="/about"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white border border-[#E7E0D5] text-[#1C1917] text-sm font-semibold hover:bg-[#EFEBE3] transition-all shadow-sm duration-200">
+          <Link href="/about" className="btn-secondary">
             Our Story
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="flex items-center gap-10 mt-4 pt-8 border-t border-[#E7E0D5] w-full max-w-sm justify-center">
+        <div className="hero-stats">
           {[
             { value: '300+', label: 'Products' },
             { value: '8', label: 'Categories' },
             { value: '50+', label: 'Countries' },
           ].map(({ value, label }) => (
-            <div key={label} className="flex flex-col items-center gap-0.5">
-              <span className="text-2xl font-bold text-[#1C1917]">{value}</span>
-              <span className="text-xs text-[#78716C] font-medium">{label}</span>
+            <div key={label} className="hero-stat">
+              <span className="hero-stat-value">{value}</span>
+              <span className="hero-stat-label">{label}</span>
             </div>
           ))}
         </div>
       </div>
+
+      <style>{`
+        .hero-content {
+          position: relative;
+          padding-top: 7rem;
+          padding-bottom: 7rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 1.75rem;
+        }
+        .hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 16px;
+          border-radius: 99px;
+          border: 1px solid rgba(201,168,76,0.4);
+          background-color: rgba(201,168,76,0.08);
+          font-size: 11px;
+          font-weight: 600;
+          color: #8B6914;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+        .hero-pulse {
+          width: 6px; height: 6px;
+          border-radius: 99px;
+          background-color: #8B6914;
+          display: inline-block;
+          animation: pulse 2s infinite;
+        }
+        .hero-h1 {
+          font-size: clamp(2.5rem, 6vw, 4.5rem);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.03em;
+          margin: 0;
+        }
+        .color-dark { color: #1C1917; }
+        .color-brand { color: #8B6914; }
+        .hero-sub {
+          font-size: clamp(0.9rem, 2vw, 1.1rem);
+          color: #78716C;
+          max-width: 480px;
+          line-height: 1.7;
+          margin: 0;
+        }
+        .hero-ctas {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 14px 28px;
+          border-radius: 12px;
+          background-color: #1C1917;
+          color: white;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+          transition: all 0.2s;
+        }
+        .btn-primary:hover {
+          background-color: #8B6914;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(139,105,20,0.35);
+        }
+        .btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 14px 28px;
+          border-radius: 12px;
+          background-color: white;
+          color: #1C1917;
+          border: 1px solid #E7E0D5;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+          transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+          background-color: #EFEBE3;
+          transform: translateY(-2px);
+        }
+        .hero-stats {
+          display: flex;
+          align-items: center;
+          gap: 40px;
+          margin-top: 16px;
+          padding-top: 32px;
+          border-top: 1px solid #E7E0D5;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .hero-stat {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+        }
+        .hero-stat-value {
+          font-size: 28px;
+          font-weight: 800;
+          color: #1C1917;
+          letter-spacing: -0.03em;
+        }
+        .hero-stat-label {
+          font-size: 12px;
+          color: #78716C;
+          font-weight: 500;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
     </section>
   )
 }

@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { HomeHero } from '@/components/home/HomeHero'
 import { HomeCategories } from '@/components/home/HomeCategories'
 import { HomeFeatured } from '@/components/home/HomeFeatured'
 import { HomeTrust } from '@/components/home/HomeTrust'
 
 export default async function HomePage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const [{ data: categories }, { data: featured }] = await Promise.all([
     supabase.from('categories').select('*').order('name'),
@@ -18,7 +18,7 @@ export default async function HomePage() {
   ])
 
   return (
-    <div className="flex flex-col">
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <HomeHero />
       <HomeCategories categories={categories ?? []} />
       <HomeFeatured products={featured ?? []} />
