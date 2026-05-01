@@ -2,18 +2,17 @@
 
 import { Product } from '@/lib/types'
 import { Carousel } from '@/components/ui/Carousel'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import { useCart } from '@/context/CartContext'
 import { useSnackbar } from '@/components/ui/Snackbar'
 import { formatPrice, isLowStock, isOutOfStock, getDiscountPercentage } from '@/lib/utils'
-import { ShoppingBag, Package, Globe, Shield } from 'lucide-react'
+import { ShoppingBag, Package, Globe, Shield, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart()
-  const { show } = useSnackbar()
-  const outOfStock = isOutOfStock(product.stock_quantity)
-  const lowStock = isLowStock(product.stock_quantity, product.low_stock_threshold)
+  const { show }    = useSnackbar()
+  const outOfStock  = isOutOfStock(product.stock_quantity)
+  const lowStock    = isLowStock(product.stock_quantity, product.low_stock_threshold)
   const hasDiscount = product.compare_at_price && product.compare_at_price > product.price
 
   function handleAdd() {
@@ -23,83 +22,280 @@ export function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-        {/* Left: images */}
-        <Carousel images={product.images} alt={product.name} />
+    <div className="ohg-pd-page">
 
-        {/* Right: info */}
-        <div className="flex flex-col gap-5">
-          <div>
-            <p className="text-xs text-stone-400 uppercase tracking-widest mb-2">
-              {product.category?.name}
-            </p>
-            <h1 className="text-2xl font-bold text-stone-900 leading-tight">{product.name}</h1>
+      {/* Breadcrumb */}
+      <div className="ohg-wrap">
+        <div className="ohg-pd-breadcrumb">
+          <Link href="/shop" className="ohg-pd-back">
+            <ArrowLeft size={14} />
+            <span>Back to Shop</span>
+          </Link>
+          <span className="ohg-pd-breadcrumb-sep">/</span>
+          <span className="ohg-pd-breadcrumb-cat">{product.category?.name}</span>
+          <span className="ohg-pd-breadcrumb-sep">/</span>
+          <span className="ohg-pd-breadcrumb-current">{product.name}</span>
+        </div>
+      </div>
 
-            {/* Price */}
-            <div className="flex items-center gap-3 mt-3">
-              <span className="text-2xl font-bold text-stone-900">{formatPrice(product.price)}</span>
-              {hasDiscount && (
-                <>
-                  <span className="text-base text-stone-400 line-through">
-                    {formatPrice(product.compare_at_price!)}
-                  </span>
-                  <Badge variant="sale" />
-                  <span className="text-sm font-semibold text-red-600">
-                    -{getDiscountPercentage(product.price, product.compare_at_price!)}%
-                  </span>
-                </>
-              )}
+      <div className="ohg-wrap ohg-pd-grid">
+
+        {/* Left — images */}
+        <div className="ohg-pd-left">
+          {product.images?.length > 0 ? (
+            <Carousel images={product.images} alt={product.name} />
+          ) : (
+            <div className="ohg-pd-no-img">
+              <span className="ohg-pd-no-img-emoji">
+                {product.category?.slug === 'aromatics' ? '🕯' :
+                 product.category?.slug === 'basketry' ? '🧺' :
+                 product.category?.slug === 'silverware' ? '⚱️' :
+                 product.category?.slug === 'rugs' ? '🏺' : '🛍'}
+              </span>
+              <span className="ohg-pd-no-img-label">Image coming soon</span>
             </div>
+          )}
+        </div>
+
+        {/* Right — info */}
+        <div className="ohg-pd-right">
+
+          <div className="ohg-pd-meta">
+            <span className="ohg-label">{product.category?.name}</span>
+            <span className="ohg-pd-origin">Origin: {product.origin}</span>
           </div>
 
-          {/* Stock status */}
-          <div className="flex gap-2">
-            {outOfStock && <Badge variant="out" />}
-            {!outOfStock && lowStock && <Badge variant="low" />}
-            {!outOfStock && !lowStock && (
-              <span className="text-xs text-emerald-600 font-medium">In stock</span>
+          <h1 className="ohg-pd-title">{product.name}</h1>
+
+          <div className="ohg-pd-divider" />
+
+          {/* Price */}
+          <div className="ohg-pd-price-row">
+            <span className="ohg-pd-price">{formatPrice(product.price)}</span>
+            {hasDiscount && (
+              <>
+                <span className="ohg-pd-was">{formatPrice(product.compare_at_price!)}</span>
+                <span className="ohg-badge ohg-badge-sale">
+                  -{getDiscountPercentage(product.price, product.compare_at_price!)}% off
+                </span>
+              </>
             )}
+          </div>
+
+          {/* Stock */}
+          <div className="ohg-pd-stock">
+            {outOfStock
+              ? <span className="ohg-pd-stock-out">● Out of stock</span>
+              : lowStock
+              ? <span className="ohg-pd-stock-low">● Low stock — only {product.stock_quantity} left</span>
+              : <span className="ohg-pd-stock-in">● In stock</span>
+            }
           </div>
 
           {/* Description */}
           {product.description && (
-            <p className="text-sm text-stone-600 leading-relaxed">{product.description}</p>
+            <p className="ohg-pd-desc">{product.description}</p>
           )}
 
-          {/* Add to cart */}
-          <Button
-            size="lg"
+          {/* CTA */}
+          <button
             onClick={handleAdd}
             disabled={outOfStock}
-            className="w-full sm:w-auto"
+            className="ohg-btn ohg-btn-dark ohg-btn-lg ohg-pd-cta"
           >
             <ShoppingBag size={16} />
             {outOfStock ? 'Out of Stock' : 'Add to Cart'}
-          </Button>
+          </button>
 
-          {/* Trust badges */}
-          <div className="grid grid-cols-3 gap-3 pt-2 border-t border-stone-100">
+          {/* Trust pills */}
+          <div className="ohg-pd-trust">
             {[
               { icon: <Package size={14} />, text: 'Authentic Omani' },
-              { icon: <Globe size={14} />, text: 'Ships worldwide' },
-              { icon: <Shield size={14} />, text: 'Secure checkout' },
+              { icon: <Globe size={14} />,   text: 'Ships worldwide' },
+              { icon: <Shield size={14} />,  text: 'Secure checkout' },
             ].map(({ icon, text }) => (
-              <div key={text} className="flex flex-col items-center gap-1.5 text-center p-3 rounded-xl bg-stone-50">
-                <span className="text-stone-500">{icon}</span>
-                <span className="text-[10px] text-stone-500 font-medium leading-tight">{text}</span>
+              <div key={text} className="ohg-pd-trust-pill">
+                {icon}
+                <span>{text}</span>
               </div>
             ))}
           </div>
 
-          {/* Product details */}
-          <div className="text-xs text-stone-400 flex flex-col gap-1 pt-1">
-            {product.sku && <span>SKU: {product.sku}</span>}
-            {product.origin && <span>Origin: {product.origin}</span>}
-            {product.weight_grams && <span>Weight: {product.weight_grams}g</span>}
+          {/* Details */}
+          <div className="ohg-pd-details">
+            {product.sku           && <div className="ohg-pd-detail"><span>SKU</span><span>{product.sku}</span></div>}
+            {product.origin        && <div className="ohg-pd-detail"><span>Origin</span><span>{product.origin}</span></div>}
+            {product.weight_grams  && <div className="ohg-pd-detail"><span>Weight</span><span>{product.weight_grams}g</span></div>}
           </div>
         </div>
       </div>
+
+      <style>{`
+        .ohg-pd-page {
+          background: var(--ivory);
+          min-height: 100vh;
+          padding-bottom: 96px;
+        }
+        .ohg-pd-breadcrumb {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 24px 0;
+          font-size: 12px;
+          color: var(--stone-light);
+          flex-wrap: wrap;
+        }
+        .ohg-pd-back {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: var(--stone);
+          font-weight: 500;
+          transition: color 0.25s;
+        }
+        .ohg-pd-back:hover { color: var(--charcoal); }
+        .ohg-pd-breadcrumb-sep { opacity: 0.4; }
+        .ohg-pd-breadcrumb-cat { color: var(--stone); }
+        .ohg-pd-breadcrumb-current {
+          color: var(--charcoal);
+          font-weight: 500;
+        }
+
+        .ohg-pd-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 64px;
+          padding-top: 16px;
+        }
+        @media (min-width: 768px) {
+          .ohg-pd-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .ohg-pd-grid { grid-template-columns: 55% 45%; }
+        }
+
+        .ohg-pd-left {}
+        .ohg-pd-no-img {
+          aspect-ratio: 1;
+          background: var(--ivory-2);
+          border-radius: 2px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
+        }
+        .ohg-pd-no-img-emoji { font-size: 80px; opacity: 0.4; }
+        .ohg-pd-no-img-label {
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--stone-light);
+        }
+
+        .ohg-pd-right {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding-top: 8px;
+        }
+        .ohg-pd-meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .ohg-pd-origin {
+          font-size: 11px;
+          color: var(--stone-light);
+          letter-spacing: 0.06em;
+        }
+        .ohg-pd-title {
+          font-family: var(--font-serif);
+          font-size: clamp(1.75rem, 3vw, 2.75rem);
+          font-weight: 500;
+          color: var(--charcoal);
+          line-height: 1.15;
+          letter-spacing: -0.01em;
+          margin-top: -4px;
+        }
+        .ohg-pd-divider {
+          width: 48px;
+          height: 1px;
+          background: var(--gold);
+          margin: 0;
+        }
+        .ohg-pd-price-row {
+          display: flex;
+          align-items: baseline;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .ohg-pd-price {
+          font-family: var(--font-serif);
+          font-size: 2rem;
+          font-weight: 500;
+          color: var(--charcoal);
+        }
+        .ohg-pd-was {
+          font-size: 1.1rem;
+          color: var(--stone-light);
+          text-decoration: line-through;
+        }
+        .ohg-pd-stock { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; }
+        .ohg-pd-stock-in  { color: #2D7A47; }
+        .ohg-pd-stock-low { color: #B7791F; }
+        .ohg-pd-stock-out { color: var(--stone-light); }
+        .ohg-pd-desc {
+          font-size: 15px;
+          color: var(--stone);
+          line-height: 1.8;
+        }
+        .ohg-pd-cta {
+          width: 100%;
+          justify-content: center;
+          margin-top: 4px;
+        }
+        .ohg-pd-trust {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .ohg-pd-trust-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 8px 14px;
+          background: var(--ivory-2);
+          border: 1px solid var(--border);
+          border-radius: 2px;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          color: var(--stone);
+        }
+        .ohg-pd-details {
+          border-top: 1px solid var(--border);
+          padding-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .ohg-pd-detail {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+        }
+        .ohg-pd-detail span:first-child {
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--stone-light);
+        }
+        .ohg-pd-detail span:last-child { color: var(--charcoal); }
+      `}</style>
     </div>
   )
 }

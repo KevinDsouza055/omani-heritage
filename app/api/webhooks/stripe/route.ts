@@ -11,27 +11,32 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    )
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err) {
     console.error('Webhook error:', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session
+    const session = event.data.object as Stripe.Checkout.Session & {
+      shipping_details?: {
+        name?: string | null
+        address?: {
+          line1?: string | null
+          line2?: string | null
+          city?: string | null
+          state?: string | null
+          postal_code?: string | null
+          country?: string | null
+        } | null
+      } | null
+    }
 
     try {
       const supabase = await createClient()
-
-      // Get customer email from session
       const customerEmail = session.customer_details?.email
       if (!customerEmail) return NextResponse.json({ received: true })
 
-      // Find or create customer
       let { data: customer } = await supabase
         .from('customers')
         .select('id')
@@ -50,7 +55,6 @@ export async function POST(req: NextRequest) {
         customer = newCustomer
       }
 
-      // Create order
       if (customer) {
         await supabase.from('orders').insert({
           customer_id: customer.id,

@@ -2,150 +2,132 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import { Button } from '@/components/ui/Button'
 import { useSnackbar } from '@/components/ui/Snackbar'
 import Link from 'next/link'
 import { Eye, EyeOff, CheckCircle } from 'lucide-react'
 
 export default function SignupPage() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [done, setDone] = useState(false)
+  const [name, setName]         = useState('')
+  const [showPw, setShowPw]     = useState(false)
+  const [loading, setLoading]   = useState(false)
+  const [done, setDone]         = useState(false)
   const { show } = useSnackbar()
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
-    if (password.length < 8) {
-      show('Password must be at least 8 characters', 'error')
-      return
-    }
+    if (password.length < 8) { show('Password must be at least 8 characters', 'error'); return }
     setLoading(true)
     const supabase = createClient()
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
+      email, password,
       options: {
-        data: { full_name: fullName },
+        data: { full_name: name },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     })
-    if (error) {
-      show(error.message, 'error')
-    } else {
-      setDone(true)
-    }
+    if (error) { show(error.message, 'error') }
+    else { setDone(true) }
     setLoading(false)
   }
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-[#FAFAF8]">
-        <div className="w-full max-w-sm flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
-            <CheckCircle size={32} className="text-emerald-500" />
-          </div>
-          <h2 className="text-xl font-bold text-stone-900">Check your email</h2>
-          <p className="text-sm text-stone-500 leading-relaxed">
-            We sent a confirmation link to <span className="font-medium text-stone-700">{email}</span>. Click it to activate your account.
+      <div className="ohg-auth-page">
+        <div className="ohg-auth-card" style={{ textAlign: 'center', gap: 16 }}>
+          <CheckCircle size={48} style={{ color: '#2D7A47', margin: '0 auto' }} />
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 500 }}>Check your email</h2>
+          <p style={{ fontSize: 14, color: 'var(--stone)' }}>
+            We sent a confirmation link to <strong>{email}</strong>
           </p>
-          <Link href="/auth/login">
-            <Button variant="secondary">Back to Login</Button>
+          <Link href="/auth/login" className="ohg-btn ohg-btn-outline ohg-btn-md" style={{ marginTop: 8 }}>
+            Back to Login
           </Link>
         </div>
+        <style>{`
+          .ohg-auth-page{min-height:100vh;background:var(--ivory-2);display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+          .ohg-auth-card{width:100%;max-width:420px;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:48px 40px;display:flex;flex-direction:column;}
+        `}</style>
       </div>
     )
   }
 
+  const pwStrength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 8 ? 2 : password.length < 12 ? 3 : 4
+  const strengthColor = ['transparent', '#E74C3C', '#F39C12', '#2ECC71', '#27AE60'][pwStrength]
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-[#FAFAF8]">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center gap-2 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-[#8B6914] flex items-center justify-center">
-            <span className="text-white text-sm font-bold">OHG</span>
-          </div>
-          <h1 className="text-xl font-bold text-stone-900">Create account</h1>
-          <p className="text-sm text-stone-500">Join Omani Heritage Gallery</p>
+    <div className="ohg-auth-page">
+      <div className="ohg-auth-card">
+        <div className="ohg-auth-logo">
+          <div className="ohg-auth-logomark">OHG</div>
         </div>
+        <h1 className="ohg-auth-title">Create account</h1>
+        <p className="ohg-auth-sub">Join Omani Heritage Gallery</p>
 
-        <form onSubmit={handleSignup} className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-stone-700">Full Name</label>
-            <input
-              type="text"
-              required
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
-              placeholder="Your full name"
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-200 bg-white focus:outline-none focus:border-[#8B6914] focus:ring-2 focus:ring-[#8B6914]/10 transition-all"
-            />
+        <form onSubmit={handleSignup} className="ohg-auth-form">
+          <div className="ohg-auth-field">
+            <label className="ohg-auth-label">Full name</label>
+            <input type="text" required value={name} onChange={e => setName(e.target.value)}
+              placeholder="Your name" className="ohg-input" />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-stone-700">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-200 bg-white focus:outline-none focus:border-[#8B6914] focus:ring-2 focus:ring-[#8B6914]/10 transition-all"
-            />
+          <div className="ohg-auth-field">
+            <label className="ohg-auth-label">Email address</label>
+            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com" className="ohg-input" />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-stone-700">Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={password}
+          <div className="ohg-auth-field">
+            <label className="ohg-auth-label">Password</label>
+            <div className="ohg-auth-pw-wrap">
+              <input type={showPw ? 'text' : 'password'} required value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Min. 8 characters"
-                className="w-full px-3.5 py-2.5 pr-10 text-sm rounded-xl border border-stone-200 bg-white focus:outline-none focus:border-[#8B6914] focus:ring-2 focus:ring-[#8B6914]/10 transition-all"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
-              >
-                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                placeholder="Min. 8 characters" className="ohg-input" style={{ paddingRight: 44 }} />
+              <button type="button" onClick={() => setShowPw(v => !v)} className="ohg-auth-pw-toggle">
+                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {/* Password strength indicator */}
-            <div className="flex gap-1 mt-1">
+            <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
               {[1,2,3,4].map(i => (
-                <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${
-                  password.length === 0 ? 'bg-stone-200' :
-                  password.length < 6 && i <= 1 ? 'bg-red-400' :
-                  password.length < 8 && i <= 2 ? 'bg-amber-400' :
-                  password.length < 12 && i <= 3 ? 'bg-emerald-400' :
-                  i <= 4 ? 'bg-emerald-500' : 'bg-stone-200'
-                }`} />
+                <div key={i} style={{
+                  flex: 1, height: 2, borderRadius: 2,
+                  background: i <= pwStrength ? strengthColor : 'var(--border)',
+                  transition: 'background 0.3s',
+                }} />
               ))}
             </div>
           </div>
-
-          <Button type="submit" size="lg" className="w-full mt-1" loading={loading}>
-            Create Account
-          </Button>
+          <button type="submit" disabled={loading} className="ohg-btn ohg-btn-dark ohg-btn-lg ohg-auth-submit">
+            {loading ? 'Creating account...' : 'Create Account'}
+          </button>
         </form>
 
-        <p className="text-center text-xs text-stone-500 mt-5">
+        <p className="ohg-auth-switch">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-[#8B6914] font-medium hover:underline">
-            Sign in
-          </Link>
+          <Link href="/auth/login" className="ohg-auth-switch-link">Sign in</Link>
         </p>
-
-        <p className="text-center text-[10px] text-stone-400 mt-4 leading-relaxed">
-          By creating an account you agree to our{' '}
-          <Link href="/terms" className="underline">Terms</Link> and{' '}
-          <Link href="/privacy" className="underline">Privacy Policy</Link>
+        <p style={{ fontSize: 11, color: 'var(--stone-light)', textAlign: 'center', marginTop: -8 }}>
+          By signing up you agree to our{' '}
+          <Link href="/terms" style={{ color: 'var(--gold-dark)' }}>Terms</Link> and{' '}
+          <Link href="/privacy" style={{ color: 'var(--gold-dark)' }}>Privacy Policy</Link>
         </p>
       </div>
+
+      <style>{`
+        .ohg-auth-page{min-height:100vh;background:var(--ivory-2);display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+        .ohg-auth-card{width:100%;max-width:420px;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:48px 40px;display:flex;flex-direction:column;gap:20px;}
+        .ohg-auth-logo{display:flex;justify-content:center;margin-bottom:4px;}
+        .ohg-auth-logomark{width:44px;height:44px;background:var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold-light);letter-spacing:.05em;}
+        .ohg-auth-title{font-family:var(--font-serif);font-size:1.75rem;font-weight:500;color:var(--charcoal);text-align:center;margin-top:-4px;}
+        .ohg-auth-sub{font-size:13px;color:var(--stone);text-align:center;margin-top:-12px;}
+        .ohg-auth-form{display:flex;flex-direction:column;gap:16px;}
+        .ohg-auth-field{display:flex;flex-direction:column;gap:7px;}
+        .ohg-auth-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);}
+        .ohg-auth-pw-wrap{position:relative;}
+        .ohg-auth-pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--stone-light);cursor:pointer;display:flex;}
+        .ohg-auth-submit{width:100%;justify-content:center;margin-top:4px;}
+        .ohg-auth-switch{text-align:center;font-size:13px;color:var(--stone);}
+        .ohg-auth-switch-link{color:var(--gold-dark);font-weight:600;}
+      `}</style>
     </div>
   )
 }

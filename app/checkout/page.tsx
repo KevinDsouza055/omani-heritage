@@ -2,16 +2,15 @@
 
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
-import { Button } from '@/components/ui/Button'
 import { formatPrice } from '@/lib/utils'
-import { ShoppingBag, ArrowRight } from 'lucide-react'
+import { ShoppingBag, ArrowRight, Lock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function CheckoutPage() {
   const { state, totalPrice } = useCart()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError]     = useState('')
 
   async function handleCheckout() {
     setLoading(true)
@@ -23,95 +22,193 @@ export default function CheckoutPage() {
         body: JSON.stringify({ items: state.items }),
       })
       const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setError('Something went wrong. Please try again.')
-      }
-    } catch {
-      setError('Something went wrong. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+      if (data.url) { window.location.href = data.url }
+      else { setError('Something went wrong. Please try again.') }
+    } catch { setError('Something went wrong. Please try again.') }
+    finally { setLoading(false) }
   }
 
   if (state.items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-24 flex flex-col items-center gap-5 text-center">
-        <ShoppingBag size={40} className="text-stone-300" />
-        <p className="font-medium text-stone-700">Your cart is empty</p>
-        <Link href="/shop"><Button>Browse Products</Button></Link>
+      <div className="ohg-checkout-empty">
+        <ShoppingBag size={40} style={{ opacity: 0.3 }} />
+        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem' }}>Your cart is empty</p>
+        <Link href="/shop" className="ohg-btn ohg-btn-dark ohg-btn-md">Browse Collection</Link>
+        <style>{`.ohg-checkout-empty{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:var(--ivory);}`}</style>
       </div>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 min-h-screen">
-      <h1 className="text-2xl font-bold text-stone-900 mb-8">Checkout</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Order review */}
-        <div className="flex flex-col gap-4">
-          <h2 className="font-semibold text-stone-800 text-sm">Order Review</h2>
-          <div className="flex flex-col gap-3">
-            {state.items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex gap-3 p-3 rounded-xl border border-stone-100 bg-white">
-                <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-stone-100 shrink-0">
-                  {product.images?.[0] ? (
-                    <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag size={16} className="text-stone-300" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-stone-900 truncate">{product.name}</p>
-                  <p className="text-xs text-stone-500">Qty: {quantity}</p>
-                </div>
-                <span className="text-sm font-semibold text-stone-900 shrink-0">
-                  {formatPrice(product.price * quantity)}
-                </span>
-              </div>
-            ))}
-          </div>
+    <div className="ohg-co-page">
+      <div className="ohg-wrap">
+        <div className="ohg-co-header">
+          <span className="ohg-label">Secure Checkout</span>
+          <h1 className="ohg-h2" style={{ marginTop: 8 }}>Review Your Order</h1>
         </div>
 
-        {/* Payment summary */}
-        <div className="flex flex-col gap-4">
-          <h2 className="font-semibold text-stone-800 text-sm">Payment Summary</h2>
-          <div className="rounded-2xl border border-stone-100 bg-white p-6 flex flex-col gap-4">
-            <div className="flex flex-col gap-2 text-sm">
-              <div className="flex justify-between text-stone-600">
+        <div className="ohg-co-grid">
+
+          {/* Items */}
+          <div className="ohg-co-items">
+            <p className="ohg-co-section-title">Order Summary</p>
+            <div className="ohg-co-item-list">
+              {state.items.map(({ product, quantity }) => (
+                <div key={product.id} className="ohg-co-item">
+                  <div className="ohg-co-item-img">
+                    {product.images?.[0]
+                      ? <Image src={product.images[0]} alt={product.name} fill style={{ objectFit: 'cover' }} />
+                      : <span style={{ fontSize: 28 }}>🛍</span>
+                    }
+                    <span className="ohg-co-item-qty">{quantity}</span>
+                  </div>
+                  <div className="ohg-co-item-info">
+                    <p className="ohg-co-item-cat">{product.category?.name}</p>
+                    <p className="ohg-co-item-name">{product.name}</p>
+                  </div>
+                  <span className="ohg-co-item-total">{formatPrice(product.price * quantity)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="ohg-co-summary">
+            <p className="ohg-co-section-title">Payment</p>
+
+            <div className="ohg-co-summary-rows">
+              <div className="ohg-co-summary-row">
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <div className="flex justify-between text-stone-600">
+              <div className="ohg-co-summary-row">
                 <span>Shipping</span>
-                <span className="text-stone-400">Calculated by Stripe</span>
+                <span style={{ color: 'var(--stone-light)' }}>Calculated next</span>
               </div>
-              <div className="border-t border-stone-100 pt-2 mt-1 flex justify-between font-bold text-stone-900 text-base">
+              <div className="ohg-co-summary-row ohg-co-summary-total">
                 <span>Total</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
             </div>
 
             {error && (
-              <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+              <p style={{ fontSize: 12, color: '#C0392B', background: '#FEF0EE', padding: '10px 14px', borderRadius: 2 }}>
+                {error}
+              </p>
             )}
 
-            <Button size="lg" className="w-full" onClick={handleCheckout} loading={loading}>
-              Pay with Stripe <ArrowRight size={16} />
-            </Button>
+            <button onClick={handleCheckout} disabled={loading} className="ohg-btn ohg-btn-dark ohg-btn-lg ohg-co-btn">
+              {loading ? 'Redirecting...' : (
+                <><Lock size={14} /> Pay with Stripe <ArrowRight size={14} /></>
+              )}
+            </button>
 
-            <div className="flex flex-col gap-1.5">
-              {['🔒 256-bit SSL encryption', '💳 All major cards accepted', '🌍 Multi-currency support'].map(t => (
-                <p key={t} className="text-xs text-stone-400">{t}</p>
+            <div className="ohg-co-trust">
+              {['🔒 256-bit SSL', '💳 All major cards', '🌍 Multi-currency'].map(t => (
+                <span key={t} className="ohg-co-trust-item">{t}</span>
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+        .ohg-co-page { background: var(--ivory); min-height: 100vh; padding-bottom: 96px; }
+        .ohg-co-header { padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+        .ohg-co-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+        @media (min-width: 768px) {
+          .ohg-co-grid { grid-template-columns: 1fr 420px; }
+        }
+        .ohg-co-section-title {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--stone-light);
+          margin-bottom: 24px;
+        }
+        .ohg-co-item-list { display: flex; flex-direction: column; gap: 20px; }
+        .ohg-co-item {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid var(--border);
+        }
+        .ohg-co-item:last-child { border-bottom: none; }
+        .ohg-co-item-img {
+          width: 64px; height: 64px;
+          background: var(--ivory-2);
+          border-radius: 2px;
+          flex-shrink: 0;
+          position: relative;
+          display: flex; align-items: center; justify-content: center;
+          overflow: hidden;
+        }
+        .ohg-co-item-qty {
+          position: absolute;
+          top: -6px; right: -6px;
+          width: 20px; height: 20px;
+          background: var(--charcoal);
+          color: white;
+          font-size: 10px;
+          font-weight: 700;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .ohg-co-item-info { flex: 1; min-width: 0; }
+        .ohg-co-item-cat { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dark); }
+        .ohg-co-item-name { font-family: var(--font-serif); font-size: 1rem; color: var(--charcoal); margin-top: 4px; }
+        .ohg-co-item-total { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 500; color: var(--charcoal); flex-shrink: 0; }
+
+        .ohg-co-summary {
+          background: var(--white);
+          border: 1px solid var(--border);
+          border-radius: 2px;
+          padding: 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          height: fit-content;
+          position: sticky;
+          top: 96px;
+        }
+        .ohg-co-summary-rows { display: flex; flex-direction: column; gap: 12px; }
+        .ohg-co-summary-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          color: var(--stone);
+        }
+        .ohg-co-summary-total {
+          font-family: var(--font-serif);
+          font-size: 1.25rem;
+          font-weight: 500;
+          color: var(--charcoal);
+          padding-top: 12px;
+          border-top: 1px solid var(--border);
+          margin-top: 4px;
+        }
+        .ohg-co-btn {
+          width: 100%;
+          justify-content: center;
+          gap: 10px;
+        }
+        .ohg-co-trust {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .ohg-co-trust-item {
+          font-size: 11px;
+          color: var(--stone-light);
+          letter-spacing: 0.04em;
+        }
+      `}</style>
     </div>
   )
 }
