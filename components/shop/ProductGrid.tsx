@@ -1,29 +1,49 @@
 import { Product } from '@/lib/types'
 import { ProductCard } from './ProductCard'
-import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
-type Props = {
-  products: Product[]
-  loading?: boolean
-}
-
-export function ProductGrid({ products, loading }: Props) {
-  if (loading) return <ProductGridSkeleton />
-
-  if (products.length === 0) {
+export function ProductGrid({ products, loading }: { products: Product[]; loading?: boolean }) {
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-3">
-        <p className="text-stone-400 text-sm">No products found</p>
-        <p className="text-stone-300 text-xs">Try a different category or search term</p>
+      <div className="ohg-pgrid">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="ohg-skeleton" style={{ aspectRatio: '3/4', borderRadius: 2 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div className="ohg-skeleton" style={{ height: 9, width: '35%', borderRadius: 2 }} />
+              <div className="ohg-skeleton" style={{ height: 16, width: '80%', borderRadius: 2 }} />
+              <div className="ohg-skeleton" style={{ height: 18, width: '28%', borderRadius: 2 }} />
+            </div>
+          </div>
+        ))}
+        <style>{`
+          .ohg-pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:48px 24px;}
+          @media(min-width:640px){.ohg-pgrid{grid-template-columns:repeat(3,1fr);}}
+          @media(min-width:1024px){.ohg-pgrid{grid-template-columns:repeat(4,1fr);}}
+        `}</style>
+      </div>
+    )
+  }
+
+  if (!products.length) {
+    return (
+      <div style={{ textAlign: 'center', padding: '96px 0' }}>
+        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '4rem', marginBottom: 24, opacity: 0.3 }}>◎</p>
+        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', color: 'var(--charcoal)', marginBottom: 8 }}>No products found</p>
+        <p style={{ fontSize: 13, color: 'var(--stone-light)', letterSpacing: '0.06em' }}>Try adjusting your filters</p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-      {products.map(product => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
+    <>
+      <div className="ohg-pgrid">
+        {products.map(p => <ProductCard key={p.id} product={p} />)}
+      </div>
+      <style>{`
+        .ohg-pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:48px 24px;}
+        @media(min-width:640px){.ohg-pgrid{grid-template-columns:repeat(3,1fr);}}
+        @media(min-width:1024px){.ohg-pgrid{grid-template-columns:repeat(4,1fr);}}
+      `}</style>
+    </>
   )
 }

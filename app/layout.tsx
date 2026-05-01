@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/context/CartContext'
 import { SnackbarProvider } from '@/components/ui/Snackbar'
@@ -14,6 +14,13 @@ const inter = Inter({
   display: 'swap',
 })
 
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: { default: 'Omani Heritage Gallery', template: '%s | Omani Heritage Gallery' },
   description: 'Authentic handcrafted products from Oman — basketry, aromatics, silverware, rugs and more. Shipped worldwide.',
@@ -23,13 +30,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen flex flex-col bg-[#F7F4EF]">
+    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+      <body>
         <CartProvider>
           <SnackbarProvider>
             <Navbar />
             <CartDrawer />
-            <main className="flex-1">
+            <main>
               {children}
             </main>
             <Footer />

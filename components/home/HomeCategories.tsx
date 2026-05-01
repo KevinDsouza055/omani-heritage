@@ -1,120 +1,118 @@
 import Link from 'next/link'
 import { Category } from '@/lib/types'
 
-const categoryEmojis: Record<string, string> = {
-  aromatics: '🕯',
-  basketry: '🧺',
-  silverware: '⚱️',
-  rugs: '🏺',
-  pottery: '🫙',
-  'wooden-items': '🪵',
-  leather: '👜',
-  clothing: '🧣',
+const MAP: Record<string, { emoji: string; desc: string }> = {
+  aromatics:     { emoji: '🕯',  desc: 'Soaps, candles & fragrances' },
+  basketry:      { emoji: '🧺',  desc: 'Handwoven palm crafts' },
+  silverware:    { emoji: '⚱️',  desc: 'Traditional jewellery' },
+  rugs:          { emoji: '🏺',  desc: 'Handcrafted textiles' },
+  pottery:       { emoji: '🫙',  desc: 'Clay & ceramic pieces' },
+  'wooden-items':{ emoji: '🪵',  desc: 'Hand-carved woodwork' },
+  leather:       { emoji: '👜',  desc: 'Traditional leather goods' },
+  clothing:      { emoji: '🧣',  desc: 'Garments & accessories' },
 }
 
 export function HomeCategories({ categories }: { categories: Category[] }) {
   if (!categories.length) return null
 
   return (
-    <section style={{ backgroundColor: '#EFEBE3', padding: '5rem 0' }}>
-      <div className="page-container">
-        <div className="section-header">
+    <section className="ohg-cats">
+      <div className="ohg-wrap">
+        <div className="ohg-section-head">
           <div>
-            <p className="section-eyebrow">Browse</p>
-            <h2 className="section-title">Shop by Category</h2>
+            <span className="ohg-label" style={{ marginBottom: 12 }}>Our Collection</span>
+            <h2 className="ohg-h2">Shop by Craft</h2>
           </div>
-          <Link href="/shop" className="view-all-link">View all →</Link>
+          <Link href="/shop" className="ohg-view-all">View all crafts</Link>
         </div>
 
-        <div className="category-grid">
-          {categories.map(cat => (
-            <Link key={cat.id} href={`/shop?category=${cat.slug}`} className="category-card">
-              <div className="category-icon">
-                {categoryEmojis[cat.slug] ?? '🛍'}
-              </div>
-              <span className="category-name">{cat.name}</span>
-            </Link>
-          ))}
+        <div className="ohg-cats-grid">
+          {categories.map(cat => {
+            const meta = MAP[cat.slug] ?? { emoji: '🛍', desc: 'Artisan crafts' }
+            return (
+              <Link key={cat.id} href={`/shop?category=${cat.slug}`} className="ohg-cat">
+                <div className="ohg-cat-inner">
+                  <div className="ohg-cat-icon">{meta.emoji}</div>
+                  <div className="ohg-cat-overlay">
+                    <span className="ohg-cat-name">{cat.name}</span>
+                    <span className="ohg-cat-desc">{meta.desc}</span>
+                    <span className="ohg-cat-cta">Browse →</span>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
 
       <style>{`
-        .section-header {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          margin-bottom: 2.5rem;
+        .ohg-cats {
+          background: var(--ivory);
+          padding: 96px 0;
         }
-        .section-eyebrow {
-          font-size: 11px;
-          font-weight: 600;
-          color: #8B6914;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          margin-bottom: 8px;
-        }
-        .section-title {
-          font-size: clamp(1.5rem, 3vw, 2rem);
-          font-weight: 700;
-          color: #1C1917;
-          letter-spacing: -0.02em;
-          margin: 0;
-        }
-        .view-all-link {
-          font-size: 13px;
-          font-weight: 500;
-          color: #78716C;
-          text-decoration: none;
-          transition: color 0.15s;
-        }
-        .view-all-link:hover { color: #1C1917; }
-        .category-grid {
+        .ohg-cats-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
+          gap: 2px;
         }
-        @media (min-width: 480px) {
-          .category-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (min-width: 768px) {
-          .category-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        .category-card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          padding: 24px 16px;
-          border-radius: 16px;
-          background-color: #F7F4EF;
-          border: 1px solid #E7E0D5;
+        @media (min-width: 640px)  { .ohg-cats-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .ohg-cats-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .ohg-cat {
+          display: block;
           text-decoration: none;
-          transition: all 0.2s;
+          aspect-ratio: 1;
+          overflow: hidden;
+          background: var(--ivory-2);
+          position: relative;
         }
-        .category-card:hover {
-          border-color: rgba(201,168,76,0.5);
-          box-shadow: 0 4px 16px rgba(139,105,20,0.1);
-          transform: translateY(-2px);
-        }
-        .category-card:hover .category-name { color: #8B6914; }
-        .category-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
-          background-color: #EFEBE3;
+        .ohg-cat-inner {
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 24px;
-          transition: transform 0.2s;
+          position: relative;
+          transition: all 0.5s var(--ease-luxury);
         }
-        .category-card:hover .category-icon { transform: scale(1.1); }
-        .category-name {
-          font-size: 13px;
-          font-weight: 600;
-          color: #1C1917;
-          text-align: center;
-          transition: color 0.2s;
+        .ohg-cat-icon {
+          font-size: 52px;
+          transition: all 0.5s var(--ease-luxury);
+          opacity: 0.7;
+        }
+        .ohg-cat-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(26,24,20,0.88);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          opacity: 0;
+          transition: opacity 0.45s var(--ease-luxury);
+        }
+        .ohg-cat:hover .ohg-cat-overlay { opacity: 1; }
+        .ohg-cat:hover .ohg-cat-icon { transform: scale(0.7); opacity: 0.3; }
+        .ohg-cat-name {
+          font-family: var(--font-serif);
+          font-size: 1.4rem;
+          font-weight: 500;
+          color: var(--white);
+          letter-spacing: 0.02em;
+        }
+        .ohg-cat-desc {
+          font-size: 11px;
+          color: var(--gold-light);
+          letter-spacing: 0.08em;
+        }
+        .ohg-cat-cta {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--gold);
+          margin-top: 8px;
         }
       `}</style>
     </section>

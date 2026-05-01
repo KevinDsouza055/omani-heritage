@@ -11,86 +11,69 @@ export function CartDrawer() {
   const { state, closeCart, removeItem, updateQty, totalPrice, totalItems } = useCart()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
-
   if (!mounted) return null
 
   return (
     <>
       {state.isOpen && (
-        <div className="fixed inset-0 bg-[#1C1917]/40 backdrop-blur-sm z-40" onClick={closeCart} />
+        <div className="ohg-cart-backdrop" onClick={closeCart} />
       )}
 
-      <div className={`fixed top-0 right-0 h-full w-full max-w-[380px] bg-[#F7F4EF] z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-out ${state.isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`ohg-cart-drawer ${state.isOpen ? 'open' : ''}`}>
 
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E7E0D5] bg-[#EFEBE3]">
-          <div className="flex items-center gap-2.5">
-            <ShoppingBag size={17} className="text-[#8B6914]" />
-            <span className="font-bold text-[#1C1917] text-sm">Your Cart</span>
-            {totalItems > 0 && (
-              <span className="bg-[#8B6914] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                {totalItems}
-              </span>
-            )}
+        {/* Header */}
+        <div className="ohg-cart-header">
+          <div className="ohg-cart-header-left">
+            <ShoppingBag size={16} />
+            <span>Your Cart</span>
+            {totalItems > 0 && <span className="ohg-cart-count">{totalItems}</span>}
           </div>
-          <button onClick={closeCart} className="p-1.5 rounded-lg hover:bg-[#E7E0D5] transition-colors text-[#78716C]">
-            <X size={16} />
+          <button onClick={closeCart} className="ohg-cart-close">
+            <X size={18} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        {/* Body */}
+        <div className="ohg-cart-body">
           {state.items.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center gap-4 text-center py-12">
-              <div className="w-16 h-16 rounded-2xl bg-[#EFEBE3] flex items-center justify-center">
-                <ShoppingBag size={24} className="text-[#C9A84C]/60" />
+            <div className="ohg-cart-empty">
+              <div className="ohg-cart-empty-icon">
+                <ShoppingBag size={28} />
               </div>
-              <div>
-                <p className="font-semibold text-[#1C1917] text-sm">Your cart is empty</p>
-                <p className="text-xs text-[#78716C] mt-1">Add some beautiful Omani pieces</p>
-              </div>
-              <button onClick={closeCart} className="text-xs font-semibold text-[#8B6914] hover:underline">
-                Continue Shopping →
+              <p className="ohg-cart-empty-title">Your cart is empty</p>
+              <p className="ohg-cart-empty-sub">Add some beautiful Omani pieces</p>
+              <button onClick={closeCart} className="ohg-btn ohg-btn-outline-gold ohg-btn-sm" style={{ marginTop: 8 }}>
+                Browse Collection
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="ohg-cart-items">
               {state.items.map(({ product, quantity }) => (
-                <div key={product.id} className="flex gap-3 p-3.5 rounded-2xl bg-white border border-[#E7E0D5]">
-                  <div className="w-16 h-16 rounded-xl bg-[#EFEBE3] overflow-hidden shrink-0 relative">
-                    {product.images?.[0] ? (
-                      <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ShoppingBag size={16} className="text-[#C9A84C]/40" />
-                      </div>
-                    )}
+                <div key={product.id} className="ohg-cart-item">
+                  <div className="ohg-cart-item-img">
+                    {product.images?.[0]
+                      ? <Image src={product.images[0]} alt={product.name} fill style={{ objectFit: 'cover' }} />
+                      : <span style={{ fontSize: 28 }}>🛍</span>
+                    }
                   </div>
-
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-semibold text-[#8B6914] uppercase tracking-wider">
-                      {product.category?.name}
-                    </p>
-                    <p className="text-sm font-semibold text-[#1C1917] truncate mt-0.5">{product.name}</p>
-                    <p className="text-xs text-[#78716C] mt-0.5">{formatPrice(product.price)} each</p>
-                    <div className="flex items-center gap-2 mt-2.5">
-                      <button onClick={() => updateQty(product.id, quantity - 1)}
-                        className="w-6 h-6 rounded-lg bg-[#EFEBE3] hover:bg-[#E7E0D5] flex items-center justify-center transition-colors">
-                        <Minus size={11} className="text-[#1C1917]" />
+                  <div className="ohg-cart-item-info">
+                    <p className="ohg-cart-item-cat">{product.category?.name}</p>
+                    <p className="ohg-cart-item-name">{product.name}</p>
+                    <p className="ohg-cart-item-price">{formatPrice(product.price)} each</p>
+                    <div className="ohg-cart-item-qty">
+                      <button onClick={() => updateQty(product.id, quantity - 1)} className="ohg-cart-qty-btn">
+                        <Minus size={10} />
                       </button>
-                      <span className="text-xs font-bold text-[#1C1917] w-4 text-center">{quantity}</span>
-                      <button onClick={() => updateQty(product.id, quantity + 1)}
-                        className="w-6 h-6 rounded-lg bg-[#EFEBE3] hover:bg-[#E7E0D5] flex items-center justify-center transition-colors">
-                        <Plus size={11} className="text-[#1C1917]" />
+                      <span>{quantity}</span>
+                      <button onClick={() => updateQty(product.id, quantity + 1)} className="ohg-cart-qty-btn">
+                        <Plus size={10} />
                       </button>
                     </div>
                   </div>
-
-                  <div className="flex flex-col items-end justify-between shrink-0">
-                    <span className="text-sm font-bold text-[#1C1917]">
-                      {formatPrice(product.price * quantity)}
-                    </span>
-                    <button onClick={() => removeItem(product.id)}
-                      className="p-1.5 rounded-lg text-[#78716C] hover:text-red-500 hover:bg-red-50 transition-all">
-                      <Trash2 size={12} />
+                  <div className="ohg-cart-item-right">
+                    <span className="ohg-cart-item-total">{formatPrice(product.price * quantity)}</span>
+                    <button onClick={() => removeItem(product.id)} className="ohg-cart-remove">
+                      <Trash2 size={13} />
                     </button>
                   </div>
                 </div>
@@ -99,24 +82,236 @@ export function CartDrawer() {
           )}
         </div>
 
+        {/* Footer */}
         {state.items.length > 0 && (
-          <div className="border-t border-[#E7E0D5] bg-[#EFEBE3] px-6 py-5 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-[#78716C] font-medium">Subtotal</span>
-              <span className="font-bold text-[#1C1917] text-lg">{formatPrice(totalPrice)}</span>
+          <div className="ohg-cart-footer">
+            <div className="ohg-cart-subtotal">
+              <span>Subtotal</span>
+              <span className="ohg-cart-subtotal-amt">{formatPrice(totalPrice)}</span>
             </div>
-            <p className="text-[11px] text-[#78716C]">Shipping and taxes calculated at checkout</p>
-            <Link href="/checkout" onClick={closeCart}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#1C1917] text-white text-sm font-bold hover:bg-[#292524] transition-all shadow-md">
+            <p className="ohg-cart-note">Shipping & taxes calculated at checkout</p>
+            <Link href="/checkout" onClick={closeCart} className="ohg-btn ohg-btn-dark ohg-btn-lg" style={{ width: '100%', justifyContent: 'center' }}>
               Proceed to Checkout
             </Link>
-            <button onClick={closeCart}
-              className="text-xs text-center text-[#78716C] hover:text-[#1C1917] transition-colors font-medium">
+            <button onClick={closeCart} className="ohg-cart-continue">
               Continue Shopping
             </button>
           </div>
         )}
       </div>
+
+      <style>{`
+        .ohg-cart-backdrop {
+          position: fixed; inset: 0;
+          background: rgba(26,24,20,0.5);
+          backdrop-filter: blur(4px);
+          z-index: 200;
+        }
+        .ohg-cart-drawer {
+          position: fixed; top: 0; right: 0; bottom: 0;
+          width: 100%; max-width: 420px;
+          background: var(--ivory);
+          z-index: 201;
+          display: flex; flex-direction: column;
+          box-shadow: -4px 0 48px rgba(26,24,20,0.15);
+          transform: translateX(100%);
+          transition: transform 0.45s var(--ease-luxury);
+        }
+        .ohg-cart-drawer.open { transform: translateX(0); }
+
+        .ohg-cart-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 24px 28px;
+          border-bottom: 1px solid var(--border);
+          background: var(--white);
+        }
+        .ohg-cart-header-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--charcoal);
+        }
+        .ohg-cart-count {
+          width: 20px; height: 20px;
+          background: var(--gold);
+          color: white;
+          font-size: 10px;
+          font-weight: 700;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .ohg-cart-close {
+          width: 36px; height: 36px;
+          display: flex; align-items: center; justify-content: center;
+          border-radius: 2px;
+          background: none; border: none;
+          color: var(--stone);
+          cursor: pointer;
+          transition: background 0.2s, color 0.2s;
+        }
+        .ohg-cart-close:hover { background: var(--ivory-2); color: var(--charcoal); }
+
+        .ohg-cart-body {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px 28px;
+        }
+        .ohg-cart-empty {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          text-align: center;
+          padding: 40px 0;
+        }
+        .ohg-cart-empty-icon {
+          width: 64px; height: 64px;
+          border-radius: 50%;
+          background: var(--ivory-2);
+          display: flex; align-items: center; justify-content: center;
+          color: var(--stone-light);
+          margin-bottom: 8px;
+        }
+        .ohg-cart-empty-title {
+          font-family: var(--font-serif);
+          font-size: 1.2rem;
+          color: var(--charcoal);
+        }
+        .ohg-cart-empty-sub { font-size: 13px; color: var(--stone-light); }
+
+        .ohg-cart-items { display: flex; flex-direction: column; gap: 20px; }
+        .ohg-cart-item {
+          display: flex;
+          gap: 16px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid var(--border);
+        }
+        .ohg-cart-item:last-child { border-bottom: none; }
+        .ohg-cart-item-img {
+          width: 72px; height: 88px;
+          border-radius: 2px;
+          background: var(--ivory-2);
+          overflow: hidden;
+          flex-shrink: 0;
+          position: relative;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .ohg-cart-item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .ohg-cart-item-cat {
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--gold-dark);
+        }
+        .ohg-cart-item-name {
+          font-family: var(--font-serif);
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--charcoal);
+          line-height: 1.3;
+        }
+        .ohg-cart-item-price { font-size: 12px; color: var(--stone); margin-top: 2px; }
+        .ohg-cart-item-qty {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-top: 8px;
+        }
+        .ohg-cart-item-qty span {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--charcoal);
+          min-width: 16px;
+          text-align: center;
+        }
+        .ohg-cart-qty-btn {
+          width: 24px; height: 24px;
+          border: 1px solid var(--border);
+          background: none;
+          border-radius: 2px;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer;
+          color: var(--stone);
+          transition: all 0.2s;
+        }
+        .ohg-cart-qty-btn:hover { border-color: var(--charcoal); color: var(--charcoal); }
+
+        .ohg-cart-item-right {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: space-between;
+          flex-shrink: 0;
+        }
+        .ohg-cart-item-total {
+          font-family: var(--font-serif);
+          font-size: 1.05rem;
+          font-weight: 500;
+          color: var(--charcoal);
+        }
+        .ohg-cart-remove {
+          background: none; border: none;
+          color: var(--stone-light);
+          cursor: pointer;
+          padding: 4px;
+          transition: color 0.2s;
+        }
+        .ohg-cart-remove:hover { color: #C0392B; }
+
+        .ohg-cart-footer {
+          padding: 24px 28px;
+          border-top: 1px solid var(--border);
+          background: var(--white);
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .ohg-cart-subtotal {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .ohg-cart-subtotal span:first-child {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--stone);
+        }
+        .ohg-cart-subtotal-amt {
+          font-family: var(--font-serif);
+          font-size: 1.5rem;
+          font-weight: 500;
+          color: var(--charcoal);
+        }
+        .ohg-cart-note {
+          font-size: 11px;
+          color: var(--stone-light);
+          margin-top: -8px;
+        }
+        .ohg-cart-continue {
+          background: none; border: none;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--stone-light);
+          cursor: pointer;
+          text-align: center;
+          transition: color 0.25s;
+          padding: 4px;
+        }
+        .ohg-cart-continue:hover { color: var(--charcoal); }
+      `}</style>
     </>
   )
 }

@@ -1,89 +1,113 @@
-import { Package, Globe, Shield, RefreshCw } from 'lucide-react'
+import { Shield, Globe, RefreshCw, Award } from 'lucide-react'
 
 const features = [
   {
-    icon: <Package size={18} />,
-    title: 'Authentic & Handcrafted',
-    desc: 'Every product made by skilled Omani artisans using traditional techniques passed down for generations.',
+    icon: <Award size={22} />,
+    title: 'Certified Authentic',
+    desc: 'Every piece is verified handmade by Omani artisans. Certificates of authenticity available on request.',
   },
   {
-    icon: <Globe size={18} />,
-    title: 'Worldwide Shipping',
-    desc: 'We ship to over 50 countries. Your piece of Omani heritage delivered safely to your door.',
+    icon: <Globe size={22} />,
+    title: 'Global Delivery',
+    desc: 'Carefully packaged and shipped to over 50 countries from Muscat with full tracking.',
   },
   {
-    icon: <Shield size={18} />,
-    title: 'Secure Payments',
-    desc: 'All transactions encrypted and processed securely through Stripe.',
+    icon: <Shield size={22} />,
+    title: 'Secure & Trusted',
+    desc: 'All payments are encrypted via Stripe. Your data is never shared or sold.',
   },
   {
-    icon: <RefreshCw size={18} />,
-    title: 'Easy Returns',
-    desc: 'Not satisfied? Contact us within 14 days of receiving your order.',
+    icon: <RefreshCw size={22} />,
+    title: '14-Day Returns',
+    desc: 'Not completely satisfied? Return within 14 days for a full refund, no questions asked.',
   },
 ]
 
 export function HomeTrust() {
   return (
-    <section style={{ backgroundColor: '#1C1917', padding: '5rem 0' }}>
-      <div className="page-container">
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: '#C9A84C', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
-            Why choose us
-          </p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.02em', margin: 0 }}>
-            Shop with Confidence
-          </h2>
+    <section className="ohg-trust">
+      <div className="ohg-wrap">
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <span className="ohg-label" style={{ marginBottom: 16, color: 'var(--gold-light)' }}>Our Promise</span>
+          <h2 className="ohg-h2" style={{ color: 'white' }}>Why Choose Us</h2>
+          <div style={{ width: 48, height: 1, background: 'var(--gold)', margin: '24px auto 0' }} />
         </div>
 
-        <div className="trust-grid">
+        <div className="ohg-trust-grid">
           {features.map(({ icon, title, desc }) => (
-            <div key={title} className="trust-card">
-              <div className="trust-icon">{icon}</div>
-              <div>
-                <p style={{ fontWeight: 600, color: 'white', fontSize: 14, marginBottom: 6 }}>{title}</p>
-                <p style={{ fontSize: 13, color: '#78716C', lineHeight: 1.6, margin: 0 }}>{desc}</p>
-              </div>
+            <div key={title} className="ohg-trust-card">
+              <div className="ohg-trust-icon">{icon}</div>
+              <h3 className="ohg-trust-title">{title}</h3>
+              <p className="ohg-trust-desc">{desc}</p>
             </div>
           ))}
+        </div>
+
+        <div className="ohg-trust-bottom">
+          <div className="ohg-trust-bottom-line" />
+          <span className="ohg-trust-bottom-text">Trusted by customers in 50+ countries since 2024</span>
+          <div className="ohg-trust-bottom-line" />
         </div>
       </div>
 
       <style>{`
-        .trust-grid {
+        .ohg-trust {
+          background: var(--charcoal);
+          padding: 96px 0 80px;
+        }
+        .ohg-trust-grid {
           display: grid;
-          grid-template-columns: repeat(1, 1fr);
-          gap: 16px;
+          grid-template-columns: 1fr;
+          gap: 1px;
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.06);
         }
-        @media (min-width: 640px) {
-          .trust-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (min-width: 1024px) {
-          .trust-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        .trust-card {
+        @media (min-width: 640px)  { .ohg-trust-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .ohg-trust-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .ohg-trust-card {
+          padding: 40px 32px;
+          background: var(--charcoal);
           display: flex;
           flex-direction: column;
           gap: 16px;
-          padding: 24px;
-          border-radius: 16px;
-          background-color: #292524;
-          border: 1px solid rgba(255,255,255,0.06);
-          transition: all 0.2s;
+          transition: background 0.35s;
         }
-        .trust-card:hover {
-          border-color: rgba(201,168,76,0.3);
-          transform: translateY(-2px);
+        .ohg-trust-card:hover { background: var(--charcoal-2); }
+        .ohg-trust-icon {
+          color: var(--gold);
+          margin-bottom: 4px;
         }
-        .trust-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-          background-color: rgba(139,105,20,0.2);
+        .ohg-trust-title {
+          font-family: var(--font-serif);
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: white;
+          letter-spacing: 0;
+        }
+        .ohg-trust-desc {
+          font-size: 13px;
+          color: var(--stone);
+          line-height: 1.7;
+        }
+        .ohg-trust-bottom {
           display: flex;
           align-items: center;
-          justify-content: center;
-          color: #C9A84C;
+          gap: 24px;
+          margin-top: 64px;
+        }
+        .ohg-trust-bottom-line {
+          flex: 1;
+          height: 1px;
+          background: rgba(255,255,255,0.08);
+        }
+        .ohg-trust-bottom-text {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--stone);
+          white-space: nowrap;
         }
       `}</style>
     </section>
